@@ -31,11 +31,14 @@ func modifyRootCommand(rootCommand *cobra.Command) {
 		ABCIVersion: abci.ABCIClientVersion1,
 		AppVersion:  3,
 		StartArgs: []string{
-			"--grpc.enable=true",
-			"--api.enable=true",
+			"--grpc.enable",
+			// ensure the grpc address is accessible from other hosts.
+			"--grpc.address=0.0.0.0:9090",
+			"--api.enable",
 			"--api.swagger=false",
 			"--with-tendermint=false",
 			"--transport=grpc",
+			"--address=0.0.0.0:26658",
 			// "--v2-upgrade-height=0",
 		},
 	})
