@@ -9,6 +9,7 @@ import (
 
 func (s *CelestiaTestSuite) TestE2ESimple() {
 	t := s.T()
+	t.Parallel()
 	if testing.Short() {
 		t.Skip("skipping in short mode")
 	}

@@ -37,7 +37,7 @@ type CelestiaTestSuite struct {
 	network string
 }
 
-func (s *CelestiaTestSuite) SetupSuite() {
+func (s *CelestiaTestSuite) SetupTest() {
 	s.logger = zaptest.NewLogger(s.T())
 	s.logger.Info("Setting up Celestia test suite")
 	s.client, s.network = celestiadockertypes.DockerSetup(s.T())

@@ -33,6 +33,7 @@ func validatorStateSyncAppOverrides() toml.Toml {
 
 func (s *CelestiaTestSuite) TestStateSync() {
 	t := s.T()
+	t.Parallel()
 	if testing.Short() {
 		t.Skip("skipping in short mode")
 	}
