@@ -1,0 +1,11 @@
+syntax = "proto3";
+package celestia.lst.v1;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/celestiaorg/celestia-app/x/lst/types";
+
+// Params defines the parameters for the lst module.
+message Params {
+  // Add module parameters here as needed
+}

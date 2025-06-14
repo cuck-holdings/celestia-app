@@ -46,6 +46,8 @@ import (
 
 	"github.com/celestiaorg/celestia-app/v4/x/blob"
 	blobtypes "github.com/celestiaorg/celestia-app/v4/x/blob/types"
+	"github.com/celestiaorg/celestia-app/v4/x/lst"
+	lsttypes "github.com/celestiaorg/celestia-app/v4/x/lst/types"
 	"github.com/celestiaorg/celestia-app/v4/x/minfee"
 	minfeetypes "github.com/celestiaorg/celestia-app/v4/x/minfee/types"
 	minttypes "github.com/celestiaorg/celestia-app/v4/x/mint/types"
@@ -88,6 +90,7 @@ var ModuleEncodingRegisters = []module.AppModuleBasic{
 	minfee.AppModule{},
 	mintModule{},
 	signal.AppModule{},
+	lst.AppModule{},
 }
 
 func (app *App) setModuleOrder() {
@@ -106,12 +109,14 @@ func (app *App) setModuleOrder() {
 		ibctransfertypes.ModuleName,
 		genutiltypes.ModuleName,
 		blobtypes.ModuleName,
+		lsttypes.ModuleName,
 		paramstypes.ModuleName,
 		authz.ModuleName,
 		signaltypes.ModuleName,
 		minfeetypes.ModuleName,
 		icatypes.ModuleName,
 		packetforwardtypes.ModuleName,
+		lst.ModuleName,
 	)
 
 	app.ModuleManager.SetOrderPreBlockers(
@@ -133,6 +138,7 @@ func (app *App) setModuleOrder() {
 		banktypes.ModuleName,
 		genutiltypes.ModuleName,
 		blobtypes.ModuleName,
+		lsttypes.ModuleName,
 		paramstypes.ModuleName,
 		authz.ModuleName,
 		vestingtypes.ModuleName,
@@ -165,6 +171,7 @@ func (app *App) setModuleOrder() {
 		evidencetypes.ModuleName,
 		ibctransfertypes.ModuleName,
 		blobtypes.ModuleName,
+		lsttypes.ModuleName,
 		vestingtypes.ModuleName,
 		feegrant.ModuleName,
 		paramstypes.ModuleName,
@@ -200,6 +207,7 @@ func allStoreKeys() []string {
 		icahosttypes.StoreKey,
 		signaltypes.StoreKey,
 		blobtypes.StoreKey,
+		lsttypes.StoreKey,
 		minfeetypes.StoreKey,      // added in v4
 		consensustypes.StoreKey,   // added in v4
 		circuittypes.StoreKey,     // added in v4

@@ -1,0 +1,12 @@
+syntax = "proto3";
+package celestia.lst.v1;
+
+import "gogoproto/gogo.proto";
+import "celestia/lst/v1/params.proto";
+
+option go_package = "github.com/celestiaorg/celestia-app/x/lst/types";
+
+// GenesisState defines the lst module's genesis state.
+message GenesisState {
+  Params params = 1 [(gogoproto.nullable) = false];
+}
