@@ -140,6 +140,7 @@ var maccPerms = map[string][]string{
 	icatypes.ModuleName:            nil,
 	hyperlanetypes.ModuleName:      nil,
 	warptypes.ModuleName:           {authtypes.Minter, authtypes.Burner},
+	lsttypes.ModuleName:            {authtypes.Minter, authtypes.Burner, authtypes.Staking},
 }
 
 var (
@@ -378,6 +379,9 @@ func New(
 		keys[lsttypes.StoreKey],
 		app.GetSubspace(lsttypes.ModuleName),
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		app.AccountKeeper,
+		app.BankKeeper,
+		app.StakingKeeper,
 	)
 
 	app.MinFeeKeeper = minfeekeeper.NewKeeper(encodingConfig.Codec, keys[minfeetypes.StoreKey], app.ParamsKeeper, app.GetSubspace(minfeetypes.ModuleName), authtypes.NewModuleAddress(govtypes.ModuleName).String())

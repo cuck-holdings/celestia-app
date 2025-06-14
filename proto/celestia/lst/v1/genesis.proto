@@ -3,10 +3,24 @@ package celestia.lst.v1;
 
 import "gogoproto/gogo.proto";
 import "celestia/lst/v1/params.proto";
+import "celestia/lst/v1/basket.proto";
+import "celestia/lst/v1/pending.proto";
 
 option go_package = "github.com/celestiaorg/celestia-app/x/lst/types";
 
 // GenesisState defines the lst module's genesis state.
 message GenesisState {
   Params params = 1 [(gogoproto.nullable) = false];
+  
+  // baskets is the list of all baskets
+  repeated Basket baskets = 2 [(gogoproto.nullable) = false];
+  
+  // pending_redemptions is the list of all pending redemptions
+  repeated PendingRedemption pending_redemptions = 3 [(gogoproto.nullable) = false];
+  
+  // next_basket_id is the next ID to be assigned to a new basket
+  uint64 next_basket_id = 4;
+  
+  // next_pending_id is the next ID to be assigned to a pending redemption
+  uint64 next_pending_id = 5;
 }

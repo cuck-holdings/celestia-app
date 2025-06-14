@@ -1,0 +1,46 @@
+syntax = "proto3";
+package celestia.lst.v1;
+
+import "gogoproto/gogo.proto";
+import "cosmos_proto/cosmos.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/celestiaorg/celestia-app/x/lst/types";
+
+// PendingRedemption represents a pending redemption operation
+message PendingRedemption {
+  // id is the unique identifier for this pending operation
+  uint64 id = 1;
+  
+  // basket_id is the ID of the basket being redeemed from
+  string basket_id = 2;
+  
+  // delegator is the address requesting the redemption
+  string delegator = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  
+  // shares_burned is the amount of basket shares that were burned
+  string shares_burned = 4 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  
+  // tokens_to_receive is the amount of TIA tokens to be received
+  string tokens_to_receive = 5 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+  
+  // completion_time is when the unbonding will complete
+  google.protobuf.Timestamp completion_time = 6 [
+    (gogoproto.nullable) = false,
+    (gogoproto.stdtime) = true
+  ];
+  
+  // creation_time is when this redemption was requested
+  google.protobuf.Timestamp creation_time = 7 [
+    (gogoproto.nullable) = false,
+    (gogoproto.stdtime) = true
+  ];
+}

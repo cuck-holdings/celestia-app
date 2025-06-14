@@ -1,0 +1,68 @@
+syntax = "proto3";
+package celestia.lst.v1;
+
+import "gogoproto/gogo.proto";
+import "cosmos_proto/cosmos.proto";
+import "amino/amino.proto";
+
+option go_package = "github.com/celestiaorg/celestia-app/x/lst/types";
+
+// Basket represents a liquid staking token backed by multiple validators
+message Basket {
+  // id is the unique identifier for this basket
+  string id = 1;
+  
+  // denom is the token denomination for this basket (e.g., "bTIA-1")
+  string denom = 2;
+  
+  // validators is the list of validator addresses in this basket
+  repeated ValidatorWeight validators = 3 [(gogoproto.nullable) = false];
+  
+  // total_shares is the total number of basket tokens issued
+  string total_shares = 4 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  
+  // total_staked_tokens is the total amount of TIA staked by this basket
+  string total_staked_tokens = 5 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+  
+  // creator is the address of the basket creator
+  string creator = 6 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  
+  // creation_time is when the basket was created
+  int64 creation_time = 7;
+  
+  // metadata contains optional descriptive information
+  BasketMetadata metadata = 8;
+}
+
+// ValidatorWeight defines a validator and its weight in the basket
+message ValidatorWeight {
+  // validator_address is the operator address of the validator
+  string validator_address = 1 [(cosmos_proto.scalar) = "cosmos.ValidatorAddressString"];
+  
+  // weight is the relative weight of this validator in the basket
+  string weight = 2 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+}
+
+// BasketMetadata contains optional metadata for a basket
+message BasketMetadata {
+  // name is a human-readable name for the basket
+  string name = 1;
+  
+  // description provides additional details about the basket
+  string description = 2;
+  
+  // symbol is a short identifier for the basket token
+  string symbol = 3;
+}
