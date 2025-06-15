@@ -1,0 +1,75 @@
+syntax = "proto3";
+package celestia.lst.v1;
+
+import "celestia/lst/v1/basket.proto";
+import "celestia/lst/v1/pending.proto";
+import "celestia/lst/v1/params.proto";
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+
+option go_package = "github.com/celestiaorg/celestia-app/x/lst/types";
+
+// Query defines the gRPC querier service.
+service Query {
+  // Params queries the parameters of the lst module.
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/lst/v1/params";
+  }
+
+  // Basket queries a single basket by ID.
+  rpc Basket(QueryBasketRequest) returns (QueryBasketResponse) {
+    option (google.api.http).get = "/lst/v1/basket/{basket_id}";
+  }
+
+  // Baskets queries all baskets.
+  rpc Baskets(QueryBasketsRequest) returns (QueryBasketsResponse) {
+    option (google.api.http).get = "/lst/v1/baskets";
+  }
+
+  // PendingRedemptions queries pending redemptions for a delegator.
+  rpc PendingRedemptions(QueryPendingRedemptionsRequest) returns (QueryPendingRedemptionsResponse) {
+    option (google.api.http).get = "/lst/v1/pending_redemptions/{delegator}";
+  }
+}
+
+// QueryParamsRequest is the request type for the Query/Params RPC method.
+message QueryParamsRequest {}
+
+// QueryParamsResponse is the response type for the Query/Params RPC method.
+message QueryParamsResponse {
+  Params params = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryBasketRequest is the request type for the Query/Basket RPC method.
+message QueryBasketRequest {
+  string basket_id = 1;
+}
+
+// QueryBasketResponse is the response type for the Query/Basket RPC method.
+message QueryBasketResponse {
+  Basket basket = 1;
+}
+
+// QueryBasketsRequest is the request type for the Query/Baskets RPC method.
+message QueryBasketsRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+// QueryBasketsResponse is the response type for the Query/Baskets RPC method.
+message QueryBasketsResponse {
+  repeated Basket baskets = 1;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryPendingRedemptionsRequest is the request type for the Query/PendingRedemptions RPC method.
+message QueryPendingRedemptionsRequest {
+  string delegator = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+}
+
+// QueryPendingRedemptionsResponse is the response type for the Query/PendingRedemptions RPC method.
+message QueryPendingRedemptionsResponse {
+  repeated PendingRedemption pending_redemptions = 1;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}

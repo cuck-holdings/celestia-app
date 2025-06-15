@@ -1,0 +1,186 @@
+syntax = "proto3";
+package celestia.lst.v1;
+
+import "celestia/lst/v1/basket.proto";
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "cosmos/msg/v1/msg.proto";
+import "cosmos_proto/cosmos.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "amino/amino.proto";
+
+option go_package = "github.com/celestiaorg/celestia-app/x/lst/types";
+
+// Msg defines the lst Msg service.
+service Msg {
+  option (cosmos.msg.v1.service) = true;
+
+  // CreateBasket creates a new basket of validators
+  rpc CreateBasket(MsgCreateBasket) returns (MsgCreateBasketResponse) {
+    option (google.api.http) = {
+      post: "/lst/v1/create_basket",
+      body: "*"
+    };
+  }
+
+  // MintBasketToken mints basket tokens by staking TIA
+  rpc MintBasketToken(MsgMintBasketToken) returns (MsgMintBasketTokenResponse) {
+    option (google.api.http) = {
+      post: "/lst/v1/mint_basket_token",
+      body: "*"
+    };
+  }
+
+  // RedeemBasketToken redeems basket tokens for TIA (with unbonding period)
+  rpc RedeemBasketToken(MsgRedeemBasketToken) returns (MsgRedeemBasketTokenResponse) {
+    option (google.api.http) = {
+      post: "/lst/v1/redeem_basket_token",
+      body: "*"
+    };
+  }
+
+  // ConvertDelegation converts an existing delegation to basket tokens
+  rpc ConvertDelegation(MsgConvertDelegation) returns (MsgConvertDelegationResponse) {
+    option (google.api.http) = {
+      post: "/lst/v1/convert_delegation",
+      body: "*"
+    };
+  }
+
+  // ConvertBasket converts basket tokens from one basket to another
+  rpc ConvertBasket(MsgConvertBasket) returns (MsgConvertBasketResponse) {
+    option (google.api.http) = {
+      post: "/lst/v1/convert_basket",
+      body: "*"
+    };
+  }
+}
+
+// MsgCreateBasket defines a message to create a new basket
+message MsgCreateBasket {
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "celestia/MsgCreateBasket";
+
+  // creator is the address creating the basket
+  string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  
+  // validators is the list of validator addresses and their weights
+  repeated ValidatorWeight validators = 2 [(gogoproto.nullable) = false];
+  
+  // metadata contains optional descriptive information
+  BasketMetadata metadata = 3;
+}
+
+// MsgCreateBasketResponse is the response for MsgCreateBasket
+message MsgCreateBasketResponse {
+  // basket_id is the ID of the newly created basket
+  string basket_id = 1;
+  
+  // denom is the denomination of the basket token
+  string denom = 2;
+}
+
+// MsgMintBasketToken defines a message to mint basket tokens
+message MsgMintBasketToken {
+  option (cosmos.msg.v1.signer) = "minter";
+  option (amino.name) = "celestia/MsgMintBasketToken";
+
+  // minter is the address minting the basket tokens
+  string minter = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  
+  // basket_id is the ID of the basket to mint tokens for
+  string basket_id = 2;
+  
+  // amount is the amount of TIA to stake
+  cosmos.base.v1beta1.Coin amount = 3 [(gogoproto.nullable) = false];
+}
+
+// MsgMintBasketTokenResponse is the response for MsgMintBasketToken
+message MsgMintBasketTokenResponse {
+  // shares_minted is the amount of basket tokens minted
+  string shares_minted = 1 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+}
+
+// MsgRedeemBasketToken defines a message to redeem basket tokens
+message MsgRedeemBasketToken {
+  option (cosmos.msg.v1.signer) = "redeemer";
+  option (amino.name) = "celestia/MsgRedeemBasketToken";
+
+  // redeemer is the address redeeming the basket tokens
+  string redeemer = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  
+  // basket_id is the ID of the basket to redeem tokens from
+  string basket_id = 2;
+  
+  // amount is the amount of basket tokens to redeem
+  cosmos.base.v1beta1.Coin amount = 3 [(gogoproto.nullable) = false];
+}
+
+// MsgRedeemBasketTokenResponse is the response for MsgRedeemBasketToken
+message MsgRedeemBasketTokenResponse {
+  // pending_redemption_id is the ID of the pending redemption
+  uint64 pending_redemption_id = 1;
+  
+  // completion_time is when the redemption will complete
+  string completion_time = 2;
+}
+
+// MsgConvertDelegation defines a message to convert an existing delegation to basket tokens
+message MsgConvertDelegation {
+  option (cosmos.msg.v1.signer) = "delegator";
+  option (amino.name) = "celestia/MsgConvertDelegation";
+
+  // delegator is the address of the delegator
+  string delegator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  
+  // validator_address is the address of the validator to convert from
+  string validator_address = 2 [(cosmos_proto.scalar) = "cosmos.ValidatorAddressString"];
+  
+  // amount is the amount of delegation to convert
+  cosmos.base.v1beta1.Coin amount = 3 [(gogoproto.nullable) = false];
+  
+  // basket_id is the ID of the basket to convert to
+  string basket_id = 4;
+}
+
+// MsgConvertDelegationResponse is the response for MsgConvertDelegation
+message MsgConvertDelegationResponse {
+  // shares_minted is the amount of basket tokens minted
+  string shares_minted = 1 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+}
+
+// MsgConvertBasket defines a message to convert basket tokens from one basket to another
+message MsgConvertBasket {
+  option (cosmos.msg.v1.signer) = "converter";
+  option (amino.name) = "celestia/MsgConvertBasket";
+
+  // converter is the address converting the basket tokens
+  string converter = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  
+  // from_basket_id is the ID of the source basket
+  string from_basket_id = 2;
+  
+  // to_basket_id is the ID of the destination basket
+  string to_basket_id = 3;
+  
+  // amount is the amount of source basket tokens to convert
+  cosmos.base.v1beta1.Coin amount = 4 [(gogoproto.nullable) = false];
+}
+
+// MsgConvertBasketResponse is the response for MsgConvertBasket
+message MsgConvertBasketResponse {
+  // shares_minted is the amount of destination basket tokens minted
+  string shares_minted = 1 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+}
