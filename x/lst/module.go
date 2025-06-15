@@ -25,6 +25,7 @@ var (
 	_ module.AppModuleBasic      = AppModule{}
 	_ module.HasGenesis          = AppModule{}
 	_ module.HasConsensusVersion = AppModule{}
+	_ module.HasInvariants       = AppModule{}
 	_ module.HasName             = AppModule{}
 	_ module.HasServices         = AppModule{}
 
@@ -116,6 +117,11 @@ func (am AppModule) InitGenesis(ctx sdk.Context, _ codec.JSONCodec, gs json.RawM
 func (am AppModule) ExportGenesis(ctx sdk.Context, _ codec.JSONCodec) json.RawMessage {
 	genState := am.keeper.ExportGenesis(ctx)
 	return am.cdc.MustMarshalJSON(genState)
+}
+
+// RegisterInvariants registers the lst module's invariants.
+func (am AppModule) RegisterInvariants(ir sdk.InvariantRegistry) {
+	keeper.RegisterInvariants(ir, am.keeper)
 }
 
 // ConsensusVersion implements ConsensusVersion.
